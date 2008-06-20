@@ -6,10 +6,22 @@ use warnings;
 our $VERSION = '0.01';
 
 use Data::AMF::Parser;
+use Data::AMF::Packet;
+
+sub serialize {
+    
+}
 
 sub deserialize {
-    my ($class, $data) = @_;
-    Data::AMF::Parser->parse($data);
+    
+}
+
+sub serialize_packet {
+
+}
+
+sub deserialize_pakcet {
+
 }
 
 =head1 NAME
@@ -18,8 +30,17 @@ Data::AMF - Module abstract (<= 44 characters) goes here
 
 =head1 SYNOPSIS
 
-  use Data::AMF;
-  blah blah blah
+=cut
+
+use Data::AMF;
+
+my $packet = Data::AMF->from_packet($amf_packet);
+
+for my $message (@{ $packet->messages }) {
+
+    my $result = dispatch_remoting( $message->target_uri );
+    
+}
 
 =head1 DESCRIPTION
 

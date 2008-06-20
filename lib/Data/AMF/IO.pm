@@ -46,7 +46,10 @@ sub read_s16 {
     my $self = shift;
 
     my $data = $self->read(2);
-    unpack('s>', $data);
+
+    return unpack('s>', $data) if $] >= 5.009002;
+    return unpack('s', $data)  if ENDIAN eq 'BIG';
+    return unpack('s', swap($data));
 }
 
 sub read_u32 {
@@ -60,7 +63,9 @@ sub read_double {
     my $self = shift;
 
     my $data = $self->read(8);
-    unpack('d>', $data);
+    return unpack('d>', $data) if $] >= 5.009002;
+    return unpack('d', $data)  if ENDIAN eq 'BIG';
+    return unpack('d', swap($data));
 }
 
 sub read_utf8 {
@@ -75,6 +80,10 @@ sub read_utf8_long {
 
     my $len = $self->read_u32;
     $self->read($len);
+}
+
+sub swap {
+    join '', reverse split '', $_[0];
 }
 
 1;
