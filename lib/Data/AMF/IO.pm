@@ -86,5 +86,59 @@ sub swap {
     join '', reverse split '', $_[0];
 }
 
+sub write {
+    my ($self, $data) = @_;
+    $self->{data} .= $data;
+}
+
+sub write_u8 {
+    my ($self, $data) = @_;
+    $self->write( pack('C', $data) );
+}
+
+sub write_u16 {
+    my ($self, $data) = @_;
+    $self->write( pack('n', $data) );
+}
+
+sub write_s16 {
+    my ($self, $data) = @_;
+
+    $self->write( pack('s>', $data) ) if $] >= 5.009002;
+    $self->write( pack('s', $data) )  if ENDIAN eq 'BIG';
+    $self->write( swap pack('s', $data) );
+}
+
+sub write_u32 {
+    my ($self, $data) = @_;
+    $self->write( pack('N', $data) );
+}
+
+sub write_double {
+    my ($self, $data) = @_;
+
+    $self->write( pack('d>', $data) ) if $] >= 5.009002;
+    $self->write( pack('d', $data) )  if ENDIAN eq 'BIG';
+    $self->write( swap pack('d', $data) );
+}
+
+sub write_utf8 {
+    my ($self, $data) = @_;
+
+    my $len = bytes::length($data);
+
+    $self->write_u16($len);
+    $self->write($data);
+}
+
+sub write_utf8_long {
+    my ($self, $data) = @_;
+
+    my $len = bytes::length($data);
+
+    $self->write_u32($len);
+    $self->write($data);
+}
+
 1;
 
