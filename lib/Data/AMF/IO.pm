@@ -1,6 +1,8 @@
 package Data::AMF::IO;
 use Moose;
 
+require bytes;
+
 use constant ENDIAN => unpack('S', pack('C2', 0, 1)) == 1 ? 'BIG' : 'LITTLE';
 
 has data => (
@@ -104,9 +106,9 @@ sub write_u16 {
 sub write_s16 {
     my ($self, $data) = @_;
 
-    $self->write( pack('s>', $data) ) if $] >= 5.009002;
-    $self->write( pack('s', $data) )  if ENDIAN eq 'BIG';
-    $self->write( swap pack('s', $data) );
+    return $self->write( pack('s>', $data) ) if $] >= 5.009002;
+    return $self->write( pack('s', $data) )  if ENDIAN eq 'BIG';
+    return $self->write( swap pack('s', $data) );
 }
 
 sub write_u32 {
@@ -117,9 +119,9 @@ sub write_u32 {
 sub write_double {
     my ($self, $data) = @_;
 
-    $self->write( pack('d>', $data) ) if $] >= 5.009002;
-    $self->write( pack('d', $data) )  if ENDIAN eq 'BIG';
-    $self->write( swap pack('d', $data) );
+    return $self->write( pack('d>', $data) ) if $] >= 5.009002;
+    return $self->write( pack('d', $data) )  if ENDIAN eq 'BIG';
+    return $self->write( swap pack('d', $data) );
 }
 
 sub write_utf8 {
