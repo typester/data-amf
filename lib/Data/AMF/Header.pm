@@ -23,6 +23,11 @@ has value => (
     is => 'rw',
 );
 
+has version => (
+    is  => 'rw',
+    isa => 'Int',
+);
+
 1;
 
 

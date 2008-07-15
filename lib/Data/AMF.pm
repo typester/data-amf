@@ -9,7 +9,8 @@ use Data::AMF::Parser;
 use Data::AMF::Packet;
 
 sub serialize {
-    
+    my ($class, @obj) = @_;
+
 }
 
 sub deserialize {
@@ -17,11 +18,15 @@ sub deserialize {
 }
 
 sub serialize_packet {
+    my $class = shift;
 
+    my $packet = Data::AMF::Packet->new(@_);
+    $packet->serialize;
 }
 
-sub deserialize_pakcet {
-
+sub deserialize_packet {
+    my ($class, $data) = @_;
+    Data::AMF::Packet->deserialize($data);
 }
 
 =head1 NAME
@@ -30,17 +35,7 @@ Data::AMF - Module abstract (<= 44 characters) goes here
 
 =head1 SYNOPSIS
 
-=cut
-
 use Data::AMF;
-
-my $packet = Data::AMF->from_packet($amf_packet);
-
-for my $message (@{ $packet->messages }) {
-
-    my $result = dispatch_remoting( $message->target_uri );
-    
-}
 
 =head1 DESCRIPTION
 

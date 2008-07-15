@@ -1,25 +1,33 @@
 package Data::AMF::Packet;
 use Moose;
 
+require bytes;
 use Data::AMF::Parser;
+use Data::AMF::Formatter;
 use Data::AMF::IO;
 
 use Data::AMF::Header;
 use Data::AMF::Message;
 
 has version => (
-    is  => 'rw',
-    isa => 'Int',
+    is      => 'rw',
+    isa     => 'Int',
+    lazy    => 1,
+    default => sub { 0 },
 );
 
 has headers => (
-    is  => 'rw',
-    isa => 'ArrayRef',
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 has messages => (
-    is  => 'rw',
-    isa => 'ArrayRef',
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    lazy    => 1,
+    default => sub { [] },
 );
 
 __PACKAGE__->meta->make_immutable;
@@ -47,6 +55,7 @@ sub deserialize {
             must_understand => $must,
             length          => $len,
             value           => $value,
+            version         => $ver,
         );
     }
 
@@ -64,6 +73,7 @@ sub deserialize {
             response_uri => $response_uri,
             length       => $len,
             value        => $value,
+            version      => $ver,
         );
     }
 
@@ -72,6 +82,36 @@ sub deserialize {
         headers  => \@headers,
         messages => \@messages,
     );
+}
+
+sub serialize {
+    my $self = shift;
+
+    my $io = Data::AMF::IO->new( data => q[] );
+
+    $io->write_u16( $self->version );
+    $io->write_u16( scalar @{ $self->headers } );
+    $io->write_u16( scalar @{ $self->messages } );
+
+    for my $header (@{ $self->headers }) {
+        $io->write_utf8( $header->name );
+        $io->write_u32( $header->must_understand );
+
+        my $data = Data::AMF::Formatter->new( version => $self->version )->format( $header->value );
+        $io->write_u32( bytes::length($data) );
+        $io->write($data);
+    }
+
+    for my $message (@{ $self->messages }) {
+        $io->write_utf8( $message->target_uri );
+        $io->write_utf8( $message->response_uri );
+
+        my $data = Data::AMF::Formatter->new( version => $self->version )->format( $message->value );
+        $io->write_u32( bytes::length($data) );
+        $io->write($data);
+    }
+
+    $io->data;
 }
 
 1;
