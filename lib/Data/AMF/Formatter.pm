@@ -23,6 +23,10 @@ Data::AMF::Formatter - serializer proxy class
 my $amf3_formatter_class = Data::AMF::Formatter->new( version => 3 );
 my $amf0_formatter_class = Data::AMF::Formatter->new( version => 0 ); # or just new without option
 
+=head1 METHODS
+
+=head2 new
+
 =head1 AUTHOR
 
 Daisuke Murase <typester@cpan.org>

@@ -23,6 +23,10 @@ Data::AMF::Parser - deserializer proxy class
 my $amf3_parser_class = Data::AMF::Parser->new( version => 3 );
 my $amf0_parser_class = Data::AMF::Parser->new( version => 0 ); # or just new without option
 
+=head1 METHODS
+
+=head2 new
+
 =head1 AUTHOR
 
 Daisuke Murase <typester@cpan.org>

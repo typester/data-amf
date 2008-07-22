@@ -188,6 +188,8 @@ Data::AMF::IO - IO class for reading/writing AMF data
 
 =head2 swap
 
+=head2 ENDIAN
+
 =head1 AUTHOR
 
 Daisuke Murase <typester@cpan.org>

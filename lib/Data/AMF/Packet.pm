@@ -74,6 +74,7 @@ sub deserialize {
             length       => $len,
             value        => $value,
             version      => $ver,
+            source       => $data,
         );
     }
 
