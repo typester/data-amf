@@ -1,49 +1,76 @@
 package Data::AMF;
 use 0.008001;
-use strict;
-use warnings;
+use Moose;
 
 our $VERSION = '0.01';
 
 use Data::AMF::Parser;
-use Data::AMF::Packet;
+use Data::AMF::Formatter;
+
+has version => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => sub { 0 },
+);
+
+has parser => (
+    is      => 'rw',
+    isa     => 'Data::AMF::Parser',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        Data::AMF::Parser->new( version => $self->version );
+    },
+);
+
+has formatter => (
+    is      => 'rw',
+    isa     => 'Data::AMF::Formatter',
+    lazy    => 1,
+    default => sub {
+        my $self = shift;
+        Data::AMF::Formatter->new( version => $self->version );
+    },
+);
+
+__PACKAGE__->meta->make_immutable;
 
 sub serialize {
-    my ($class, @obj) = @_;
-
+    my $self = shift;
+    $self->formatter->format(@_);
 }
 
 sub deserialize {
-    
-}
-
-sub serialize_packet {
-    my $class = shift;
-
-    my $packet = Data::AMF::Packet->new(@_);
-    $packet->serialize;
-}
-
-sub deserialize_packet {
-    my ($class, $data) = @_;
-    Data::AMF::Packet->deserialize($data);
+    my $self = shift;
+    $self->parser->parse(@_);
 }
 
 =head1 NAME
 
-Data::AMF - Module abstract (<= 44 characters) goes here
+Data::AMF - serialize/deserialize AMF data and packet.
 
 =head1 SYNOPSIS
 
 use Data::AMF;
 
+    my $amf0 = Data::AMF->new( version => 0 );
+    my $amf3 = Data::AMF->new( version => 3 );
+    
+    # AMF to Perl Object
+    my $obj = $amf0->deserialize($data);
+    
+    # Perl Object to AMF
+    my $data = $amf0->serialize($obj);
+
 =head1 DESCRIPTION
 
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
+=head1 METHOD
 
-Blah blah blah.
+=head2 new
+
+=head2 serialize
+
+=head2 deserialize
 
 =head1 AUTHOR
 
