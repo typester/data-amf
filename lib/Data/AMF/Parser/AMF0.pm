@@ -60,7 +60,7 @@ sub parse_number {
 sub parse_boolean {
     my $io = shift;
 
-    !!$io->read_u8;
+    $io->read_u8 ? 1 : 0;
 }
 
 sub parse_string {
@@ -76,9 +76,10 @@ sub parse_object {
 
     while (1) {
         my $len = $io->read_u16;
+
         if ($len == 0) {
             $io->read_u8;       # object-end marker
-            last
+            return $obj;
         }
         my $key   = $io->read($len);
         my $value = __PACKAGE__->parse_one($io);

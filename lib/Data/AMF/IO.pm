@@ -24,6 +24,10 @@ __PACKAGE__->meta->make_immutable;
 sub read {
     my ($self, $len) = @_;
 
+    if ($len + $self->pos > bytes::length($self->data) ) {
+        return;
+    }
+
     my $data = substr $self->data, $self->pos, $len;
     $self->pos( $self->pos + $len );
 
@@ -33,7 +37,7 @@ sub read {
 sub read_u8 {
     my $self = shift;
 
-    my $data = $self->read(1);
+    my $data = $self->read(1) or return;
     unpack('C', $data);
 }
 
@@ -65,6 +69,7 @@ sub read_double {
     my $self = shift;
 
     my $data = $self->read(8);
+
     return unpack('d>', $data) if $] >= 5.009002;
     return unpack('d', $data)  if ENDIAN eq 'BIG';
     return unpack('d', swap($data));

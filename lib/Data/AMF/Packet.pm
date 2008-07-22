@@ -48,7 +48,9 @@ sub deserialize {
         my $name  = $io->read_utf8;
         my $must  = $io->read_u32;
         my $len   = $io->read_u32;
-        my $value = $parser->parse_one($io);
+
+        my $data    = $io->read($len);
+        my ($value) = $parser->parse($data);
 
         push @headers, Data::AMF::Header->new(
             name            => $name,
@@ -74,7 +76,7 @@ sub deserialize {
             length       => $len,
             value        => $value,
             version      => $ver,
-            source       => $data,
+            source       => $data
         );
     }
 

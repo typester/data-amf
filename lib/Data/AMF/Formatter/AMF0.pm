@@ -36,8 +36,11 @@ sub format {
         if (looks_like_number($obj)) {
             $self->format_number($obj);
         }
-        else {
+        elsif (defined($obj)) {
             $self->format_string($obj);
+        }
+        else {
+            $self->format_null($obj);
         }
     }
 
@@ -79,7 +82,15 @@ sub format_object {
         $self->io->write($key);
         $self->format($obj->{$key});
     }
+
+    $self->io->write_u16(0x00);
     $self->io->write_u8(0x09);      # object-end marker
+}
+
+sub format_null {
+    my ($self, $obj) = @_;
+
+    $self->io->write_u8(0x05);  # null marker
 }
 
 sub format_typed_object {
@@ -112,6 +123,8 @@ Data::AMF::Formatter::AMF0 - AMF0 serializer
 =head2 format_strict_array
 
 =head2 format_object
+
+=head2 format_null
 
 =head2 format_typed_object
 

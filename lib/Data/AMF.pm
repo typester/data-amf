@@ -15,7 +15,6 @@ has version => (
 
 has parser => (
     is      => 'rw',
-    isa     => 'Data::AMF::Parser',
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -25,7 +24,6 @@ has parser => (
 
 has formatter => (
     is      => 'rw',
-    isa     => 'Data::AMF::Formatter',
     lazy    => 1,
     default => sub {
         my $self = shift;
@@ -57,7 +55,7 @@ use Data::AMF;
     my $amf3 = Data::AMF->new( version => 3 );
     
     # AMF to Perl Object
-    my $obj = $amf0->deserialize($data);
+    my @obj = $amf0->deserialize($data);
     
     # Perl Object to AMF
     my $data = $amf0->serialize($obj);
