@@ -162,7 +162,7 @@ Data::AMF::Parser::AMF0 - deserializer for AMF0
 
 =head1 SYNOPSIS
 
-=head1 DESCRIPTION
+    my $obj = Data::AMF::Parser::AMF0->parse($amf0_data);
 
 =head1 METHODS
 

@@ -45,30 +45,60 @@ sub deserialize {
 
 =head1 NAME
 
-Data::AMF - serialize/deserialize AMF data and packet.
+Data::AMF - serialize / deserialize AMF data
 
 =head1 SYNOPSIS
 
-use Data::AMF;
-
+    use Data::AMF;
+    
     my $amf0 = Data::AMF->new( version => 0 );
     my $amf3 = Data::AMF->new( version => 3 );
     
-    # AMF to Perl Object
-    my @obj = $amf0->deserialize($data);
+    # AMF0 to Perl Object
+    my $obj = $amf0->deserialize($data);
     
-    # Perl Object to AMF
+    # Perl Object to AMF0
     my $data = $amf0->serialize($obj);
 
 =head1 DESCRIPTION
 
+This module is (de)serializer for Adobe's AMF (Action Message Format).
+Data::AMF is core module and it recognize only AMF data, not AMF packet. If you want to read/write AMF Packet, see Data::AMF::Packet instead.
+
+=head1 SEE ALSO
+
+L<Data::AMF::Packet>, L<Catalyst::Controller::FlashRemoting>
+
+=head1 NOTICE
+
+Data::AMF is currently in a very early alpha development stage.
+The current version is not support AMF3, and application interface is still fluid.
+
 =head1 METHOD
 
-=head2 new
+=head2 new(%option)
 
-=head2 serialize
+Create Data::AMF object.
 
-=head2 deserialize
+Option parameters are:
+
+=over
+
+=item version
+
+Target AMF version.
+
+It should be 0 or 3. (default 0 for AMF0)
+
+=back
+
+=head2 serialize($obj)
+
+Serialize perl object ($obj) to AMF, and return the AMF data.
+
+=head2 deserialize($amf)
+
+Deserialize AMF data to perl object, and return the perl object.
 
 =head1 AUTHOR
 

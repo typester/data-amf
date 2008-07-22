@@ -32,6 +32,16 @@ has version => (
 
 Data::AMF::Header - AMF message header
 
+=head1 ACCESSORS
+
+=head2 name
+
+=head2 must_understand
+
+=head2 value
+
+=head2 version
+
 =head1 AUTHOR
 
 Daisuke Murase <typester@cpan.org>

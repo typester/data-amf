@@ -151,9 +151,9 @@ sub write_utf8_long {
 
 Data::AMF::IO - IO class for reading/writing AMF data
 
-=head1 SYNOSIS
-
 =head1 DESCRIPTION
+
+IO class for reading/writing AMF data
 
 =head1 METHODS
 

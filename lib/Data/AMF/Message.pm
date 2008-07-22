@@ -66,15 +66,39 @@ Data::AMF::Message - AMF Message class
 
 =head1 SYNOPSIS
 
+    use Data::AMF::Packet;
+    
+    # get message
+    my $packet   = Data::AMF::Packet->deserialize($amf_packet);
+    my $messages = $packet->messages;
+    
+    # do something about it
+    my $first_request = $messages->[0];
+    
+    # and return response
+    my $response = $first_request->result($perl_object_you_want_to_return);
+
 =head1 DESCRIPTION
+
+Data::AMF::Message is an object class for AMF Packet Message.
+
+=head1 SEE ALSO
+
+L<Data::AMF::Packet>, L<Catalyst::Controller::FlashRemoting>
 
 =head1 METHODS
 
 =head2 new
 
-=head2 result
+Create new Data::AMF::Message object.
 
-=head2 error
+=head2 result($result)
+
+Return normal response AMF Message object against current request of AMF Message.
+
+=head2 error($error)
+
+Return error response AMF Message object against current request of AMF Message.
 
 =head1 AUTHOR
 

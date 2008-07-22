@@ -123,18 +123,44 @@ Data::AMF::Packet - serialize / deserialize AMF message packet
 
 =head1 SYNOPSIS
 
-use Data::AMF::Packet
-
-my $packet = Data::AMF::Packet->deserialize($data);
-my $data   = $packet->serialize;
+    use Data::AMF::Packet
+    
+    my $packet = Data::AMF::Packet->deserialize($data);
+    my $data   = $packet->serialize;
 
 =head1 DESCRIPTION
+
+Data::AMF::Packet provides to serialize/deserialize AMF Packet.
+
+AMF Packet is an extended format of AMF, and is used for Flash's HTTP based Remote Procidure Call (known as Flash Remoting).
+
+=head1 SEE ALSO
+
+L<Data::AMF>, L<Catalyst::Controller::FlashRemoting>
 
 =head1 METHODS
 
 =head2 serialize
 
-=head2 deserialize
+Serialize Data::AMF::Packet object into AMF Packet data.
+
+=head2 deserialize($amf_packet)
+
+Deserialize AMF Packet, and return Data::AMF::Packet object.
+
+=head1 ACCESSORS
+
+=head2 version
+
+return AMF Packet version.
+
+=head2 headers
+
+return AMF Packet header objects. (ArrayRef of L<Data::AMF::Header>)
+
+=head2 messages
+
+return AMF Packet Message objects. (ArrayRef of L<Data::AMF::Message>)
 
 =head1 AUTHOR
 
