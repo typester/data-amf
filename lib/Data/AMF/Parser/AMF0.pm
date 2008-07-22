@@ -155,5 +155,65 @@ sub parse_typed_object {
     parse_object($io);
 }
 
+=head1 NAME
+
+Data::AMF::Parser::AMF0 - deserializer for AMF0
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 METHODS
+
+=head2 parse
+
+=head2 parse_one
+
+=head2 parse_number
+
+=head2 parse_boolean
+
+=head2 parse_string
+
+=head2 parse_object
+
+=head2 parse_movieclip
+
+=head2 parse_null
+
+=head2 parse_undefined
+
+=head2 parse_reference
+
+=head2 parse_ecma_array
+
+=head2 parse_strict_array
+
+=head2 parse_date
+
+=head2 parse_long_string
+
+=head2 parse_unsupported
+
+=head2 parse_recordset
+
+=head2 parse_xml_document
+
+=head2 parse_typed_object
+
+=head1 AUTHOR
+
+Daisuke Murase <typester@cpan.org>
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
+
 1;
 

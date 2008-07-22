@@ -93,5 +93,41 @@ sub format_typed_object {
     $self->format_object($obj);
 }
 
+=head1 NAME
+
+Data::AMF::Formatter::AMF0 - AMF0 serializer
+
+=head1 SYNOPSIS
+
+    my $amf0_data = Data::AMF::Formatter::AMF0->format($obj);
+
+=head1 METHODS
+
+=head2 format
+
+=head2 format_number
+
+=head2 format_string
+
+=head2 format_strict_array
+
+=head2 format_object
+
+=head2 format_typed_object
+
+=head1 AUTHOR
+
+Daisuke Murase <typester@cpan.org>
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
+
 1;
 

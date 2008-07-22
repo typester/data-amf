@@ -142,5 +142,65 @@ sub write_utf8_long {
     $self->write($data);
 }
 
+=head1 NAME
+
+Data::AMF::IO - IO class for reading/writing AMF data
+
+=head1 SYNOSIS
+
+=head1 DESCRIPTION
+
+=head1 METHODS
+
+=head2 new
+
+=head2 read
+
+=head2 read_u8
+
+=head2 read_u16
+
+=head2 read_s16
+
+=head2 read_u32
+
+=head2 read_double
+
+=head2 read_utf8
+
+=head2 read_utf8_long
+
+=head2 write
+
+=head2 write_u8
+
+=head2 write_u16
+
+=head2 write_s16
+
+=head2 write_u32
+
+=head2 write_double
+
+=head2 write_utf8
+
+=head2 write_utf8_long
+
+=head2 swap
+
+=head1 AUTHOR
+
+Daisuke Murase <typester@cpan.org>
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
+
 1;
 
