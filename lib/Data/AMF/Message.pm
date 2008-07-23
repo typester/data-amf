@@ -13,12 +13,6 @@ has response_uri => (
     required => 1,
 );
 
-has length => (
-    is       => 'rw',
-    isa      => 'Str',
-    required => 1,
-);
-
 has value => (
     is => 'rw',
 );
@@ -40,7 +34,6 @@ sub result {
     $class->new(
         target_uri   => $self->response_uri . '/onResult',
         response_uri => '',
-        length       => -1,
         value        => $obj,
         version      => $self->version,
     );
@@ -54,7 +47,6 @@ sub error {
     $class->new(
         target_uri   => $self->response_uri . '/onStatus',
         response_uri => '',
-        length       => -1,
         value        => $obj,
         version      => $self->version,
     );

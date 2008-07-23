@@ -55,7 +55,6 @@ sub deserialize {
         push @headers, Data::AMF::Header->new(
             name            => $name,
             must_understand => $must,
-            length          => $len,
             value           => $value,
             version         => $ver,
         );
@@ -73,7 +72,6 @@ sub deserialize {
         push @messages, Data::AMF::Message->new(
             target_uri   => $target_uri,
             response_uri => $response_uri,
-            length       => $len,
             value        => $value,
             version      => $ver,
             source       => $data

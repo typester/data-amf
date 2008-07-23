@@ -13,12 +13,6 @@ has must_understand => (
     required => 1,
 );
 
-has length => (
-    is       => 'rw',
-    isa      => 'Int',
-    required => 1,
-);
-
 has value => (
     is => 'rw',
 );
