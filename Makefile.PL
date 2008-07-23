@@ -4,6 +4,7 @@ all_from 'lib/Data/AMF.pm';
 
 test_requires 'Test::More';
 
+requires 'perl' => '5.008001';
 requires 'Moose';
 requires 'Scalar::Util';
 

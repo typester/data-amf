@@ -1,5 +1,5 @@
 package Data::AMF;
-use 0.008001;
+use 5.008001;
 use Moose;
 
 our $VERSION = '0.01';
