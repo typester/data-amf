@@ -9,7 +9,7 @@ sub new {
     my $class = shift;
     my $args  = @_ > 1 ? {@_} : $_[0];
 
-    $args->{version} == 3
+    ($args->{version} || 0) == 3
       ? 'Data::AMF::Parser::AMF3'
       : 'Data::AMF::Parser::AMF0';
 }
