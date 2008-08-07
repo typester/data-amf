@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.02 2008-08-07T14:35:14+09:00
+     - added support to parse reference data-type
+
 0.01001 2008-07-23T15:13:38+09:00
      - added perl in prereqs, and fixed stupid typo 'use 0.008001' ><
 

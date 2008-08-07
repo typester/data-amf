@@ -43,6 +43,8 @@ t/data/amf0/null
 t/data/amf0/number
 t/data/amf0/object
 t/data/amf0/object2
+t/data/amf0/reference
+t/data/amf0/reference_nested
 t/data/amf0/strict_array
 t/data/amf0/string
 t/data/amf0/undefined
