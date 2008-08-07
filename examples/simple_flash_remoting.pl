@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use FindBin::libs;
-use Data::AMF;
+use Data::AMF::Packet;
 
 use HTTPEx::Declare;
 use List::Util ();
@@ -22,7 +22,7 @@ run {
         my $fh   = $c->req->body;
         my $body = do { local $/; <$fh> };
 
-        my $request = Data::AMF->deserialize_packet($body);
+        my $request = Data::AMF::Packet->deserialize($body);
 
         my @result;
         for my $message (@{ $request->messages }) {
@@ -35,14 +35,14 @@ run {
             }
         }
 
-        my $response = Data::AMF->serialize_packet(
+        my $response = Data::AMF::Packet->new(
             version  => $request->version,
             headers  => [],
             messages => \@result,
         );
 
         $c->res->content_type('application/x-amf');
-        $c->res->body($response)
+        $c->res->body($response->serialize)
     }
     else {
         $c->res->content_type('application/x-shockwave-flash');

@@ -73,6 +73,7 @@ sub parse_object {
     my $io = shift;
 
     my $obj = {};
+    push @{ $io->refs }, $obj;
 
     while (1) {
         my $len = $io->read_u16;
@@ -102,9 +103,9 @@ sub parse_undefined {
 
 sub parse_reference {
     my $io = shift;
-    $io->read_u16;
+    my $index = $io->read_u16;
 
-    return;                     # XXX
+    $io->refs->[$index] or return;
 }
 
 sub parse_ecma_array {
@@ -124,7 +125,10 @@ sub parse_strict_array {
         push @res, __PACKAGE__->parse_one($io);
     }
 
-    \@res;
+    my $array = \@res;
+    push @{ $io->refs }, $array;
+
+    $array;
 }
 
 sub parse_date {

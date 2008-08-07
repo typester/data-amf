@@ -19,6 +19,13 @@ has pos => (
     lazy    => 1,
 );
 
+has refs => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [] },
+    lazy    => 1,
+);
+
 __PACKAGE__->meta->make_immutable;
 
 sub read {
