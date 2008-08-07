@@ -81,7 +81,33 @@ data: ~
 data: ~
 
 === reference
---- SKIP
+--- input: data/amf0/reference
+--- expected
+data:
+  obj1:
+    foo: bar
+  obj2:
+    foo: bar
+
+=== nested reference
+--- input: data/amf0/reference_nested
+--- expected
+data:
+  obj:
+    foo: bar
+  obj2:
+    foo: bar
+  ary:
+    - a
+    - b
+    - c
+  nested:
+    ary:
+      - a
+      - b
+      - c
+    obj:
+      foo: bar
 
 === ecma array
 --- input: data/amf0/ecma_array
