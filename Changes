@@ -1,5 +1,9 @@
 Revision history for Perl extension Data::AMF
 
+0.02001 2008-08-08T10:59:42+09:00
+     - added YAML into test_require.
+       "use_test_base;" does not include this module...
+
 0.02 2008-08-07T14:35:14+09:00
      - added support to parse reference data-type
 
