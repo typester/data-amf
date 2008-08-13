@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.02002 2008-08-13T15:52:17+09:00
+     - added support to read/write 24bit int in Data::AMF::IO
+
 0.02001 2008-08-08T10:59:42+09:00
      - added YAML into test_require.
        "use_test_base;" does not include this module...
