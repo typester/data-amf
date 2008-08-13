@@ -65,6 +65,13 @@ sub read_s16 {
     return unpack('s', swap($data));
 }
 
+sub read_u24 {
+    my $self = shift;
+
+    my $data = $self->read(3);
+    return unpack('N', "\0$data");
+}
+
 sub read_u32 {
     my $self = shift;
 
@@ -121,6 +128,13 @@ sub write_s16 {
     return $self->write( pack('s>', $data) ) if $] >= 5.009002;
     return $self->write( pack('s', $data) )  if ENDIAN eq 'BIG';
     return $self->write( swap pack('s', $data) );
+}
+
+sub write_u24 {
+    my ($self, $data) = @_;
+
+    return $self->write( pack('CCC', $data) ) if ENDIAN eq 'BIG';
+    return $self->write( swap pack('CCC', $data) );
 }
 
 sub write_u32 {
