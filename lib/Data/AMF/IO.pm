@@ -188,6 +188,8 @@ IO class for reading/writing AMF data
 
 =head2 read_s16
 
+=head2 read_u24
+
 =head2 read_u32
 
 =head2 read_double
@@ -203,6 +205,8 @@ IO class for reading/writing AMF data
 =head2 write_u16
 
 =head2 write_s16
+
+=head2 write_u24
 
 =head2 write_u32
 
