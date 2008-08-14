@@ -7,7 +7,6 @@ use File::Spec;
 
 use Data::AMF;
 
-
 my $amf = Data::AMF->new( version => 0 );
 
 sub load {
@@ -69,6 +68,11 @@ data:
     - bar
   hash:
     foo: bar
+
+=== null object
+--- input: data/amf0/null_object
+--- expected
+data: {}
 
 === null
 --- input: data/amf0/null

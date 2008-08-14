@@ -133,8 +133,10 @@ sub write_s16 {
 sub write_u24 {
     my ($self, $data) = @_;
 
-    return $self->write( pack('CCC', $data) ) if ENDIAN eq 'BIG';
-    return $self->write( swap pack('CCC', $data) );
+    $data = pack('N', $data);
+    $data = substr $data, 1, 3;
+
+    $self->write($data);
 }
 
 sub write_u32 {

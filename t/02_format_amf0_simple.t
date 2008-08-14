@@ -47,6 +47,10 @@ data: foo
 data:
   foo: bar
 
+=== null object
+--- input
+data: {}
+
 === object2
 --- input
 data:
