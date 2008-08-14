@@ -2,7 +2,7 @@ package Data::AMF;
 use 5.008001;
 use Moose;
 
-our $VERSION = '0.02002';
+our $VERSION = '0.02003';
 
 use Data::AMF::Parser;
 use Data::AMF::Formatter;
