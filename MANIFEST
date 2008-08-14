@@ -35,12 +35,14 @@ META.yml
 README
 t/00_compile.t
 t/01_parse_amf0.t
-t/02_format_amf0.t
+t/02_format_amf0_simple.t
+t/03_format_amf0_strict.t
 t/data/amf0/boolean_false
 t/data/amf0/boolean_true
 t/data/amf0/date
 t/data/amf0/ecma_array
 t/data/amf0/null
+t/data/amf0/null_object
 t/data/amf0/number
 t/data/amf0/object
 t/data/amf0/object2

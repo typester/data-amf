@@ -13,3 +13,4 @@
 ^\.git/
 ^\.shipit$
 ^\.gitignore$
+^examples/capture
