@@ -15,32 +15,34 @@ has 'io' => (
 );
 
 sub format {
-    my ($self, $obj) = @_;
+    my ($self, @obj) = @_;
     $self = $self->new unless blessed $self;
 
-    if (my $pkg = blessed $obj) {
-        $self->format_typed_object($obj);
-    }
-    elsif (my $ref = ref($obj)) {
-        if ($ref eq 'ARRAY') {
-            $self->format_strict_array($obj);
+    for my $obj (@obj) {
+        if (my $pkg = blessed $obj) {
+            $self->format_typed_object($obj);
         }
-        elsif ($ref eq 'HASH') {
-            $self->format_object($obj);
-        }
-        else {
-            confess qq[cannot format "$ref" object];
-        }
-    }
-    else {
-        if (looks_like_number($obj)) {
-            $self->format_number($obj);
-        }
-        elsif (defined($obj)) {
-            $self->format_string($obj);
+        elsif (my $ref = ref($obj)) {
+            if ($ref eq 'ARRAY') {
+                $self->format_strict_array($obj);
+            }
+            elsif ($ref eq 'HASH') {
+                $self->format_object($obj);
+            }
+            else {
+                confess qq[cannot format "$ref" object];
+            }
         }
         else {
-            $self->format_null($obj);
+            if (looks_like_number($obj)) {
+                $self->format_number($obj);
+            }
+            elsif (defined($obj)) {
+                $self->format_string($obj);
+            }
+            else {
+                $self->format_null($obj);
+            }
         }
     }
 
