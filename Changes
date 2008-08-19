@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.02004 2008-08-19T11:08:14+09:00
+     - now serialize can handle multiple array data at once, same as deserialize
+
 0.02003 2008-08-14T12:47:20+09:00
      - fixed buggy write_u24 on IO class.
      - added parse/format test for empty object.
