@@ -3,25 +3,25 @@ use strict;
 use warnings;
 
 use Data::AMF::Parser::AMF0;
-#use Data::AMF::Parser::AMF3;
+use Data::AMF::Parser::AMF3;
 
 sub new {
     my $class = shift;
     my $args  = @_ > 1 ? {@_} : $_[0];
-
-    ($args->{version} || 0) == 3
-      ? 'Data::AMF::Parser::AMF3'
-      : 'Data::AMF::Parser::AMF0';
+	
+    return ($args->{version} || 0) == 3
+	  ? 'Data::AMF::Parser::AMF3'
+	  : 'Data::AMF::Parser::AMF0';
 }
 
 =head1 NAME
-
+ 
 Data::AMF::Parser - deserializer proxy class
 
 =head1 SYNOPSIS
 
-    my $amf3_parser_class = Data::AMF::Parser->new( version => 3 );
-    my $amf0_parser_class = Data::AMF::Parser->new( version => 0 ); # or just new without option
+my $amf3_parser_class = Data::AMF::Parser->new( version => 3 );
+my $amf0_parser_class = Data::AMF::Parser->new( version => 0 ); # or just new without option
 
 =head1 METHODS
 

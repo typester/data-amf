@@ -34,6 +34,6 @@ __DATA__
 === null object
 --- input
 data: {}
---- expected: data/amf0/null_object
+--- expected: data/amf3/null_object
 
 

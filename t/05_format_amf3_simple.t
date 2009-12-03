@@ -3,11 +3,15 @@ use Test::Base;
 plan tests => 1 * blocks;
 
 use Data::AMF;
+use Data::AMF::Type::Boolean;
+use Data::AMF::Type::ByteArray;
+use Data::AMF::Type::Null;
+use DateTime;
 
 my $amf = Data::AMF->new( version => 3 );
 
 sub serialize {
-    $amf->serialize($_[0]->{data});
+    $amf->serialize($_[0]);
 }
 
 sub deserialize {
@@ -16,8 +20,7 @@ sub deserialize {
 }
 
 filters {
-    input => [qw/yaml serialize deserialize/],
-    expected => 'yaml',
+    input => [qw/eval serialize deserialize/],
 };
 
 run_compare input => 'input';
@@ -26,68 +29,48 @@ __DATA__
 
 === number
 --- input
-data: 123
+123.45
 
 === boolean true
---- SKIP: currently not supported to format boolean
 --- input
-data: 1
+Data::AMF::Type::Boolean->new(1)
 
 === boolean false
---- SKIP: currently not supported to format boolean
 --- input
-data: 0
+Data::AMF::Type::Boolean->new(0)
 
 === string
 --- input
-data: foo
+"foo"
 
 === object
 --- input
-data:
-  foo: bar
+{ foo => "bar" }
 
 === null object
 --- input
-data: {}
+{}
 
 === object2
 --- input
-data:
-  array:
-    - foo
-    - bar
-  hash:
-    foo: bar
+{
+	array => [ "foo", "bar" ],
+	hash => { foo => "bar" }
+}
 
 === null
 --- input
-data: ~
+Data::AMF::Type::Null->new()
 
 === undefined
 --- input
-data: ~
-
-=== reference
---- SKIP
-
-=== ecma array
---- input
-data:
-  0: foo
-  bar: baz
-
-=== strict-array
---- input
-data:
-  - foo
-  - bar
-  - baz
+undef
 
 === date
 --- input
-data: 1216717318745
+DateTime->now;
 
-=== long string
---- SKIP
+=== byte_array
+--- input
+Data::AMF::Type::ByteArray->new([1, 2, 3, 4, 5])
 

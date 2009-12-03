@@ -3,25 +3,25 @@ use strict;
 use warnings;
 
 use Data::AMF::Formatter::AMF0;
-#use Data::AMF::Formatter::AMF3;
+use Data::AMF::Formatter::AMF3;
 
 sub new {
     my $class = shift;
     my $args  = @_ > 1 ? {@_} : $_[0];
-
-    $args->{version} == 3
-        ? 'Data::AMF::Formatter::AMF3'
-        : 'Data::AMF::Formatter::AMF0';
+	
+    return $args->{version} == 3
+	  ? 'Data::AMF::Formatter::AMF3'
+	  : 'Data::AMF::Formatter::AMF0';
 }
 
 =head1 NAME
-
+ 
 Data::AMF::Formatter - serializer proxy class
 
 =head1 SYNOPSIS
 
-    my $amf3_formatter_class = Data::AMF::Formatter->new( version => 3 );
-    my $amf0_formatter_class = Data::AMF::Formatter->new( version => 0 ); # or just new without option
+my $amf3_formatter_class = Data::AMF::Formatter->new( version => 3 );
+my $amf0_formatter_class = Data::AMF::Formatter->new( version => 0 ); # or just new without option
 
 =head1 METHODS
 

@@ -9,43 +9,21 @@ use UNIVERSAL::require;
 # Class Constants
 # ----------------------------------------------------------------------
 
-use constant AMF0_TYPES =>
-[
-	'number',
-	'boolean',
-	'string',
-	'object',
-	'movieclip',
-	'null',
-	'undefined',
-	'reference',
-	'ecma_array',
-	'object_end',
-	'strict_array',
-	'date',
-	'long_string',
-	'unsupported',
-	'recordset',
-	'xml_document',
-	'typed_object',
-	'avmplus_object',
-];
-
 use constant AMF3_TYPES =>
 [
-	'amf3_undefined',
-	'amf3_null',
-	'amf3_false',
-	'amf3_true',
-	'amf3_integer',
+	'undefined',
+	'null',
+	'false',
+	'true',
+	'integer',
 	'number',
-	'amf3_string',
-	'amf3_xml_document',
-	'amf3_date',
-	'amf3_array',
-	'amf3_object',
-	'amf3_xml',
-	'amf3_byte_array',
+	'string',
+	'xml_document',
+	'date',
+	'array',
+	'object',
+	'xml',
+	'byte_array',
 ];
 
 use constant AMF3_INTEGER_MAX => "268435455";
@@ -73,7 +51,6 @@ sub new
 	my $class = shift;
 	my $self = bless {
 		io => undef,
-		amf0_stored_objects => [],
 		class_member_defs => {},
 		stored_strings => [],
 		stored_objects => [],
@@ -101,151 +78,14 @@ sub read
 	
 	while (defined(my $marker = $self->io->read_u8))
 	{
-		my $method = 'read_' . AMF0_TYPES->[$marker] or die;
+		my $method = 'read_' . AMF3_TYPES->[$marker] or die;
 		push @res, $self->$method();
 	}
 	
 	@res;
 }
 
-sub read_amf0
-{
-	my $self = shift;
-	
-	my $marker = $self->io->read_u8;
-	return if not defined $marker;
-	
-	my $method = 'read_' . AMF0_TYPES->[$marker] or die;
-	return $self->$method();
-}
-
-sub read_number
-{
-	my $self = shift;
-	return $self->io->read_double;
-}
-
-sub read_boolean
-{
-	my $self = shift;	
-	return $self->io->read_u8 ? 1 : 0;
-}
-
-sub read_string
-{
-	my $self = shift;	
-	my $str = $self->io->read_utf8;
-	return $str;
-}
-
-sub read_object
-{
-	my $self = shift;
-	
-	my $obj = {};
-	push @{ $self->{'amf0_stored_objects'} }, $obj;
-	
-	while (1)
-	{
-		my $len = $self->io->read_u16;
-		if ($len == 0)
-		{
-			$self->io->read_u8;	   # object-end marker
-			return $obj;
-		}
-		my $key = $self->io->read($len);
-		my $value = $self->read_amf0;
-		
-		$obj->{$key} = $value;
-	}
-	
-	return $obj;
-}
-
-sub read_movieclip { }
-
-sub read_null
-{
-	return undef;
-}
-
-sub read_undefined
-{
-	return undef;
-}
-
-sub read_reference
-{
-	my $self = shift;
-	my $index = $self->io->read_u16;
-	my $obj = $self->{'amf0_stored_objects'}->[$index];
-	return $obj;
-}
-
-sub read_ecma_array
-{
-	my $self = shift;
-	my $count = $self->io->read_u32;
-	return $self->read_object;
-}
-
-sub read_strict_array
-{
-	my $self = shift;
-	
-	my $count = $self->io->read_u32;
-	my @res;
-	
-	for (1 .. $count)
-	{
-		push @res, $self->read_amf0;
-	}
-	
-	my $array = \@res;
-	push @{ $self->{'amf0_stored_objects'} }, $array;
-	
-	return $array;
-}
-
-sub read_date
-{
-	my $self = shift;
-	
-	my $msec = $self->io->read_double;
-	my $tz   = $self->io->read_s16;
-	
-	return $msec;
-}
-
-sub read_long_string
-{
-	my $self = shift;
-	return $self->io->read_utf8_long;
-}
-
-sub read_unsupported { }
-sub read_recordset { }
-
-sub read_xml_document
-{
-	my $self = shift;
-	return $self->read_long_string;
-}
-
-sub read_typed_object
-{
-	my $self = shift;
-	my $class = $self->io->read_utf8;
-	return $self->read_object;
-}
-
-sub read_avmplus_object
-{
-	my $self = shift;	
-	return $self->read_amf3;
-}
-
-sub read_amf3
+sub read_one
 {
 	my $self = shift;
 
@@ -254,34 +94,32 @@ sub read_amf3
 	
 	my $method = 'read_' . AMF3_TYPES->[$marker] or die;
 	return $self->$method();
-	
-	#return thaw($self->io->data);
 }
 
-sub read_amf3_undefined
+sub read_undefined
 {
 	return undef;
 }
 
-sub read_amf3_null
+sub read_null
 {
 	Data::AMF::Type::Null->require;
 	return Data::AMF::Type::Null->new;
 }
 
-sub read_amf3_false
+sub read_false
 {
 	Data::AMF::Type::Boolean->require;
 	return Data::AMF::Type::Boolean->new(0);
 }
 
-sub read_amf3_true
+sub read_true
 {
 	Data::AMF::Type::Boolean->require;
 	return Data::AMF::Type::Boolean->new(1);
 }
 
-sub read_amf3_integer
+sub read_integer
 {
 	my $self = shift;
 	
@@ -319,11 +157,17 @@ sub read_amf3_integer
 	return $result;
 }
 
-sub read_amf3_string
+sub read_number
+{
+	my $self = shift;
+	return $self->io->read_double;
+}
+
+sub read_string
 {
 	my $self = shift;
 	
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $isReference = ($type & 0x01) == 0;
 
 	if ($isReference)
@@ -358,21 +202,21 @@ sub read_amf3_string
 	}
 }
 
-sub read_amf3_xml_document
+sub read_xml_document
 {
 	my $self = shift;
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $length = $type >> 1;
 	my $obj = $self->io->read($length);
 	push @{ $self->{'stored_objects'} }, $obj;
 	return $obj;
 }
 
-sub read_amf3_date
+sub read_date
 {
 	my $self = shift;
 	
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $isReference = ($type & 0x01) == 0;
 	
 	if ($isReference)
@@ -404,11 +248,11 @@ sub read_amf3_date
 	}
 }
 
-sub read_amf3_array
+sub read_array
 {
 	my $self = shift;
 	
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $isReference = ($type & 0x01) == 0;
 	
 	if ($isReference)
@@ -431,7 +275,7 @@ sub read_amf3_array
 	else
 	{
 		my $length = $type >> 1;
-		my $key = $self->read_amf3_string();
+		my $key = $self->read_string();
 		my $array;
 		
 		if (defined $key)
@@ -441,14 +285,14 @@ sub read_amf3_array
 			
 			while(length $key)
 			{
-				my $value = $self->read_amf3();
+				my $value = $self->read_one();
 				$array->{$key} = $value;
-				$key = $self->read_amf3_string();
+				$key = $self->read_string();
 			}
 			
 			for (0 .. $length - 1)
 			{
-				$array->{$_} = $self->read_amf3();
+				$array->{$_} = $self->read_one();
 			}
 		}
 		else
@@ -458,7 +302,7 @@ sub read_amf3_array
 			
 			for (0 .. $length - 1)
 			{
-				push @{ $array }, $self->read_amf3();
+				push @{ $array }, $self->read_one();
 			}
 		}
 		
@@ -466,11 +310,11 @@ sub read_amf3_array
 	}
 }
 
-sub read_amf3_object
+sub read_object
 {
 	my $self = shift;
 	
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $isReference = ($type & 0x01) == 0;
 	
 	if ($isReference)
@@ -512,7 +356,7 @@ sub read_amf3_object
 		}
 		else
 		{
-			my $as_class_name = $self->read_amf3_string();
+			my $as_class_name = $self->read_string();
 			my $externalizable = ($class_type & 0x02) != 0;
 			my $dynamic = ($class_type & 0x04) != 0;
 			my $attr_count = $class_type >> 3;
@@ -520,7 +364,7 @@ sub read_amf3_object
 			my $members = [];
 			for (1 .. $attr_count)
 			{
-				push @{ $members }, $self->read_amf3_string();
+				push @{ $members }, $self->read_string();
 			}
 			
 			$class_definition =
@@ -554,21 +398,21 @@ sub read_amf3_object
 		
 		if ($class_definition->{'externalizable'})
 		{
-			$obj = $self->read_amf3();
+			$obj = $self->read_one();
 		}
 		else
 		{
 			for my $key (@{ $class_definition->{'members'} })
 			{
-				$obj->{$key} = $self->read_amf3();
+				$obj->{$key} = $self->read_one();
 			}
 		}
 		
 		if ($class_definition->{'dynamic'})
 		{
 			my $key;
-			while (($key = $self->read_amf3_string()) && length $key != 0) {
-				$obj->{$key} = $self->read_amf3();
+			while (($key = $self->read_string()) && length $key != 0) {
+				$obj->{$key} = $self->read_one();
 			}
 		}
 		
@@ -576,10 +420,10 @@ sub read_amf3_object
 	}
 }
 
-sub read_amf3_xml
+sub read_xml
 {
 	my $self = shift;
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $length = $type >> 1;
 	my $obj = $self->io->read($length);
 	
@@ -590,11 +434,11 @@ sub read_amf3_xml
 	return $xml;
 }
 
-sub read_amf3_byte_array
+sub read_byte_array
 {
 	my $self = shift;
 	
-	my $type = $self->read_amf3_integer();
+	my $type = $self->read_integer();
 	my $isReference = ($type & 0x01) == 0;
 	
 	if ($isReference)
@@ -626,6 +470,32 @@ sub read_amf3_byte_array
 		return $obj;
 	}
 }
+
+=head1 NAME
+ 
+Data::AMF::Parser::AMF3 - deserializer for AMF3
+
+=head1 SYNOPSIS
+
+my $obj = Data::AMF::Parser::AMF3->parse($amf3_data);
+
+=head1 METHODS
+
+=head2 parse
+
+=head1 AUTHOR
+
+Takuho Yoshizu <seagirl@cpan.org>
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
 
 1;
 

@@ -10,109 +10,143 @@ use Data::AMF::Header;
 use Data::AMF::Message;
 
 has version => (
-    is      => 'rw',
-    isa     => 'Int',
-    lazy    => 1,
-    default => sub { 0 },
+	is      => 'rw',
+	isa     => 'Int',
+	lazy    => 1,
+	default => sub { 0 },
 );
 
 has headers => (
-    is      => 'rw',
-    isa     => 'ArrayRef',
-    lazy    => 1,
-    default => sub { [] },
+	is      => 'rw',
+	isa     => 'ArrayRef',
+	lazy    => 1,
+	default => sub { [] },
 );
 
 has messages => (
-    is      => 'rw',
-    isa     => 'ArrayRef',
-    lazy    => 1,
-    default => sub { [] },
+	is      => 'rw',
+	isa     => 'ArrayRef',
+	lazy    => 1,
+	default => sub { [] },
 );
 
 __PACKAGE__->meta->make_immutable;
 
-sub deserialize {
-    my ($class, $data) = @_;
+sub deserialize
+{
+	my ($class, $data) = @_;
 
-    my $io = Data::AMF::IO->new( data => $data );
+	my $io = Data::AMF::IO->new(data => $data);
 
-    my $ver           = $io->read_u16;
-    my $header_count  = $io->read_u16;
-    my $message_count = $io->read_u16;
+	my $ver           = $io->read_u16;
+	my $header_count  = $io->read_u16;
+	my $message_count = $io->read_u16;
 
-    my $parser = Data::AMF::Parser->new( version => $ver );
+	my $parser = Data::AMF::Parser->new(version => 0);
 
-    my @headers;
-    for my $i (1 .. $header_count) {
-        my $name  = $io->read_utf8;
-        my $must  = $io->read_u32;
-        my $len   = $io->read_u32;
+	my @headers;
+	for my $i (1 .. $header_count)
+	{
+		my $name  = $io->read_utf8;
+		my $must  = $io->read_u32;
+		my $len   = $io->read_u32;
 
-        my $data    = $io->read($len);
-        my ($value) = $parser->parse($data);
+		my $data    = $io->read($len);
+		my ($value) = $parser->parse($data);
 
-        push @headers, Data::AMF::Header->new(
-            name            => $name,
-            must_understand => $must,
-            value           => $value,
-            version         => $ver,
-        );
-    }
+		push @headers, Data::AMF::Header->new(
+			name            => $name,
+			must_understand => $must,
+			value           => $value,
+			version         => $ver,
+		);
+	}
 
-    my @messages;
-    for my $i (1 .. $message_count) {
-        my $target_uri   = $io->read_utf8;
-        my $response_uri = $io->read_utf8;
-        my $len          = $io->read_u32;
+	my @messages;
+	for my $i (1 .. $message_count)
+	{
+		my $target_uri   = $io->read_utf8;
+		my $response_uri = $io->read_utf8;
+		my $len		  = $io->read_u32;
 
-        my $data    = $io->read($len);
-        my ($value) = $parser->parse($data);
+		my $data    = $io->read($len);
+		my ($value) = $parser->parse($data);
 
-        push @messages, Data::AMF::Message->new(
-            target_uri   => $target_uri,
-            response_uri => $response_uri,
-            value        => $value,
-            version      => $ver,
-            source       => $data
-        );
-    }
+		push @messages, Data::AMF::Message->new(
+			target_uri   => $target_uri,
+			response_uri => $response_uri,
+			value        => $value,
+			version      => $ver,
+			source       => $data
+		);
+	}
 
-    Data::AMF::Packet->new(
-        version  => $ver,
-        headers  => \@headers,
-        messages => \@messages,
-    );
+	return Data::AMF::Packet->new(
+		version  => $ver,
+		headers  => \@headers,
+		messages => \@messages,
+	);
 }
 
-sub serialize {
-    my $self = shift;
+sub serialize
+{
+	my $self = shift;
 
-    my $io = Data::AMF::IO->new( data => q[] );
+	my $io = Data::AMF::IO->new( data => q[] );
+	
+	$io->write_u16($self->version);
+	$io->write_u16(scalar @{ $self->headers });
+	$io->write_u16(scalar @{ $self->messages });
 
-    $io->write_u16( $self->version );
-    $io->write_u16( scalar @{ $self->headers } );
-    $io->write_u16( scalar @{ $self->messages } );
+	for my $header (@{ $self->headers })
+	{
+		$io->write_utf8( $header->name );
+		$io->write_u32( $header->must_understand );
+		
+		my $data;
+		
+		if ($self->version == 3)
+		{
+			my $formatter = Data::AMF::Formatter->new(version => 3)->new;
+			$formatter->io->write_u8(0x11);
+			$formatter->write($header->value);
+			
+			$data = $formatter->io->data;
+		}
+		else
+		{
+			$data = Data::AMF::Formatter->new(version => 0)->format($header->value);
+		}
+		
+		$io->write_u32(bytes::length($data));
+		$io->write($data);
+	}
 
-    for my $header (@{ $self->headers }) {
-        $io->write_utf8( $header->name );
-        $io->write_u32( $header->must_understand );
+	for my $message (@{ $self->messages })
+	{
+		$io->write_utf8($message->target_uri);
+		$io->write_utf8($message->response_uri);
+		
+		my $data;
+		
+		if ($self->version == 3)
+		{
+			my $formatter = Data::AMF::Formatter->new(version => 3)->new;
+			$formatter->io->write_u8(0x11);
+			$formatter->write($message->value);
+			
+			$data = $formatter->io->data;
+		}
+		else
+		{
+			$data = Data::AMF::Formatter->new(version => 0)->format($message->value);
+		}
 
-        my $data = Data::AMF::Formatter->new( version => $self->version )->format( $header->value );
-        $io->write_u32( bytes::length($data) );
-        $io->write($data);
-    }
+		$io->write_u32(bytes::length($data));
+		$io->write($data);
+	}
 
-    for my $message (@{ $self->messages }) {
-        $io->write_utf8( $message->target_uri );
-        $io->write_utf8( $message->response_uri );
-
-        my $data = Data::AMF::Formatter->new( version => $self->version )->format( $message->value );
-        $io->write_u32( bytes::length($data) );
-        $io->write($data);
-    }
-
-    $io->data;
+	return $io->data;
 }
 
 =head1 NAME
@@ -121,10 +155,10 @@ Data::AMF::Packet - serialize / deserialize AMF message packet
 
 =head1 SYNOPSIS
 
-    use Data::AMF::Packet
-    
-    my $packet = Data::AMF::Packet->deserialize($data);
-    my $data   = $packet->serialize;
+	use Data::AMF::Packet
+	
+	my $packet = Data::AMF::Packet->deserialize($data);
+	my $data   = $packet->serialize;
 
 =head1 DESCRIPTION
 

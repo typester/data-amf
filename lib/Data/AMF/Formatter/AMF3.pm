@@ -17,7 +17,7 @@ use constant
 	FALSE_MARKER => 0x02,
 	TRUE_MARKER => 0x03,
 	INTEGER_MARKER => 0x04,
-	DOUBLE_MARKER => 0x05,
+	NUMBER_MARKER => 0x05,
 	STRING_MARKER => 0x06,
 	XML_DOC_MARKER => 0x07,
 	DATE_MARKER => 0x08,
@@ -35,14 +35,11 @@ use constant
 
 sub format
 {
-	my ($class, @objects) = @_;
+	my ($class, $object) = @_;
 	
 	my $self = $class->new;
 	
-	for my $object (@objects)
-	{
-		$self->write($object);
-	}
+	$self->write($object);
 	
 	return $self->io->data;
 }
@@ -76,21 +73,6 @@ sub io { return $_[0]->{'io'} }
 # ----------------------------------------------------------------------
 
 sub write
-{
-	my ($self, $value) = @_;
-	
-	# write avmplus-object-marker
-	$self->io->write_u8(0x11);
-	
-	$self->write_amf3($value);
-	
-	#my $amf3 = freeze($value);
-	#$self->io->write($amf3);
-	
-	return;
-}
-
-sub write_amf3
 {
 	my ($self, $value) = @_;
 	
@@ -160,8 +142,8 @@ sub write_amf3
 			}
 			else
 			{
-				$self->io->write_u8(DOUBLE_MARKER);
-				$self->io->write_double($value);
+				$self->io->write_u8(NUMBER_MARKER);
+				$self->write_number($value);
 			}
 		}
 		elsif (defined $value)
@@ -210,6 +192,12 @@ sub write_integer
 			. pack('C', $value & 0xff)
 		);
 	}
+}
+
+sub write_number
+{
+	my ($self, $value) = @_;
+	$self->io->write_double($value);
 }
 
 sub write_string
@@ -267,7 +255,7 @@ sub write_array
 		
 		for my $v (@{ $value })
 		{
-			$self->write_amf3($v);
+			$self->write($v);
 		}
 	}
 }
@@ -310,7 +298,7 @@ sub write_object
 			
 			if (defined $v)
 			{
-				$self->write_amf3($value->{$k});
+				$self->write($value->{$k});
 			}
 			else
 			{
@@ -391,6 +379,32 @@ sub write_xml
 		$self->write_string($obj);
 	}
 }
+
+=head1 NAME
+
+Data::AMF::Formatter::AMF3 - AMF3 serializer
+
+=head1 SYNOPSIS
+
+my $amf3_data = Data::AMF::Formatter::AMF3->format($obj);
+
+=head1 METHODS
+
+=head2 format
+
+=head1 AUTHOR
+
+Takuho Yoshizu <seagirl@cpan.org>
+
+=head1 COPYRIGHT
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
 
 1;
 

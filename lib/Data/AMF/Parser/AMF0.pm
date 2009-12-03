@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Data::AMF::IO;
+use Data::AMF::Parser::AMF3;
 
 use constant PARSERS => [
     \&parse_number,
@@ -22,6 +23,7 @@ use constant PARSERS => [
     \&parse_recordset,
     \&parse_xml_document,
     \&parse_typed_object,
+	\&parse_avmplus_object,
 ];
 
 sub parse {
@@ -160,6 +162,14 @@ sub parse_typed_object {
     parse_object($io);
 }
 
+sub parse_avmplus_object {
+	my $io = shift;
+	
+	my $parser = Data::AMF::Parser::AMF3->new;
+	$parser->{'io'} = $io;
+	$parser->read;
+}
+
 =head1 NAME
 
 Data::AMF::Parser::AMF0 - deserializer for AMF0
@@ -205,6 +215,8 @@ Data::AMF::Parser::AMF0 - deserializer for AMF0
 =head2 parse_xml_document
 
 =head2 parse_typed_object
+ 
+ =head2 parse_avmplus_object
 
 =head1 AUTHOR
 
