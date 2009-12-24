@@ -1,5 +1,9 @@
 Revision history for Perl extension Data::AMF
 
+0.03 2009-12-24T21:39:01+09:00
+     - added AMR3 support (seagirl++)
+     - added Data::AMF::Remoting (seagirl++)
+
 0.02004 2008-08-19T11:08:14+09:00
      - now serialize can handle multiple array data at once, same as deserialize
 
