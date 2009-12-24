@@ -14,4 +14,6 @@ requires 'UNIVERSAL::require';
 
 use_test_base;
 auto_include;
+auto_set_repository
+
 WriteAll;
