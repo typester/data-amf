@@ -13,6 +13,7 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Include.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
+inc/Module/Install/Repository.pm
 inc/Module/Install/TestBase.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
@@ -35,11 +36,6 @@ lib/Data/AMF/Parser.pm
 lib/Data/AMF/Parser/AMF0.pm
 lib/Data/AMF/Parser/AMF3.pm
 lib/Data/AMF/Remoting.pm
-lib/Data/AMF/Type/.svn/all-wcprops
-lib/Data/AMF/Type/.svn/entries
-lib/Data/AMF/Type/.svn/text-base/Boolean.pm.svn-base
-lib/Data/AMF/Type/.svn/text-base/ByteArray.pm.svn-base
-lib/Data/AMF/Type/.svn/text-base/Null.pm.svn-base
 lib/Data/AMF/Type/Boolean.pm
 lib/Data/AMF/Type/ByteArray.pm
 lib/Data/AMF/Type/Null.pm
