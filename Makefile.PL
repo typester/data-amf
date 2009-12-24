@@ -13,6 +13,8 @@ requires 'XML::LibXML';
 requires 'UNIVERSAL::require';
 
 use_test_base;
+author_tests 'xt';
+
 auto_include;
 auto_set_repository
 
