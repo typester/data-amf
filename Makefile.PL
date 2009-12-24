@@ -10,6 +10,7 @@ requires 'Moose';
 requires 'Scalar::Util';
 requires 'DateTime';
 requires 'XML::LibXML';
+requires 'UNIVERSAL::require';
 
 use_test_base;
 auto_include;
