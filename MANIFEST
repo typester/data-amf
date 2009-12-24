@@ -7,6 +7,7 @@ examples/simple_flex_rpc/HelloController.pm
 examples/simple_flex_rpc/SimpleFlexRPC.mxml
 examples/simple_flex_rpc/SimpleFlexRPC.swf
 inc/Module/Install.pm
+inc/Module/Install/AuthorTests.pm
 inc/Module/Install/Base.pm
 inc/Module/Install/Can.pm
 inc/Module/Install/Fetch.pm
@@ -77,5 +78,5 @@ t/data/amf3/object2
 t/data/amf3/string
 t/data/amf3/true
 t/data/amf3/undefined
-t/pod.t
-t/pod_coverage.t
+xt/pod.t
+xt/pod_coverage.t
