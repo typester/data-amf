@@ -6,27 +6,34 @@ use Data::AMF::Message;
 use Data::AMF::Packet;
 
 use constant CLIENT_PING_OPERATION => 5;
+use constant COMMAND_MESSAGE       => 'flex.messaging.messages.CommandMessage';
+use constant REMOTING_MESSAGE      => 'flex.messaging.messages.RemotingMessage';
+use constant ACKNOWLEDGE_MESSAGE   => 'flex.messaging.messages.AcknowledgeMessage';
 
-sub new
-{
+sub new {
 	my $class = shift;	
-	
-	my $properties =
-	{
+	my $self = bless {
 		source => undef,
 		data => undef,
 		headers_did_process => sub {},
 		message_did_process => sub {},
-		@_
-	};
-	
-	return bless $properties, $class;
+		@_,
+	}, $class;
+
+	if (ref $self->{headers_handler} eq 'CODE') {
+		$self->{headers_did_process} = $self->{headers_handler};
+	}
+
+	if (ref $self->{message_handler} eq 'CODE') {
+		$self->{message_did_process} = $self->{message_handler};
+	}
+
+	return $self;
 }
 
 sub data { $_[0]->{'data'} }
 
-sub run
-{
+sub run {
 	my $self = shift;
 	
 	my $request = Data::AMF::Packet->deserialize($self->{'source'});
@@ -34,67 +41,57 @@ sub run
 	my @headers = @{ $request->headers };
 	@headers = $self->{'headers_did_process'}->(@headers);
 	
-	
 	my @messages;
 	
-	for my $message (@{ $request->messages })
-	{
+	for my $message (@{ $request->messages }) {
 		my $target_uri = $message->target_uri;
 		
 		# RemoteObject
-		if (not defined $target_uri or $target_uri eq 'null')
-		{	
-			my $type = $message->value->[0]->{'_explicitType'};
-			my $source = $message->value->[0]->{'source'};
+		if (not defined $target_uri or $target_uri eq 'null') {	
+			my $type      = $message->value->[0]->{'_explicitType'};
+			my $source    = $message->value->[0]->{'source'};
 			my $operation = $message->value->[0]->{'operation'};
 			
-			if (    $type eq 'flex.messaging.messages.CommandMessage'
-				and $operation eq CLIENT_PING_OPERATION)
-			{
+			if ($type eq COMMAND_MESSAGE and $operation eq CLIENT_PING_OPERATION) {
 				push @messages, $message->result($message->value->[0]);
 			}
-			elsif ($type eq 'flex.messaging.messages.RemotingMessage')
-			{
+			elsif ($type eq REMOTING_MESSAGE) {
 				$target_uri = '';
 				
-				if (defined $source and $source ne '')
-				{
+				if (defined $source and $source ne '') {
 					$target_uri .= $source . '.';
 				}
 				
-				if (defined $operation and $operation ne '')
-				{
+				if (defined $operation and $operation ne '') {
 					$target_uri .= $operation;
 				}
 				
 				my $res = $self->{'message_did_process'}->(
 					Data::AMF::Message->new(
-						target_uri => $target_uri,
+						target_uri   => $target_uri,
 						response_uri => '',
-						value => $message->value->[0]->{'body'}
+						value        => $message->value->[0]->{'body'}
 					)
 				);
 				
 				push @messages, $message->result({
 					correlationId => $message->value->[0]->{'messageId'},
-					messageId => undef,
-					clientId => undef,
-					destination => '',
-					timeToLive => 0,
-					timestamp => 0,
-					body => $res,
-					headers => {},
-					_explicitType => 'flex.messaging.messages.AcknowledgeMessage'
+					messageId     => undef,
+					clientId      => undef,
+					destination   => '',
+					timeToLive    => 0,
+					timestamp     => 0,
+					body          => $res,
+					headers       => {},
+					_explicitType => ACKNOWLEDGE_MESSAGE,
 				});
 			}		
-			else
-			{
+			else {
 				die "Recived unsupported message.";
 			}
 		}
 		# Net Connection
-		else
-		{			
+		else {			
 			my $res = $self->{'message_did_process'}->($message);
 			push @messages, $message->result($res);
 		}
@@ -117,35 +114,35 @@ Data::AMF::Remoting - handle Flash/Flex RPC.
 
 =head1 SYNOPSIS
 
-use Data::AMF::Remoting
- 
-my $remoting = Data::AMF::Remoting->new(
-  source => $data,
-  headers_did_process => sub
-  {
-    my @headers = @_;
+    use Data::AMF::Remoting
 
-    # Do authenticate or something.
+    my $remoting = Data::AMF::Remoting->new(
+        source => $data,
+        headers_handler => sub
+        {
+            my @headers = @_;
 
-    return @headers;
-  },
-  message_did_process => sub
-  {
-    my $message = shift;
+            # Do authenticate or something.
 
-    # Call action using target_uri and value.
+            return @headers;
+        },
+        message_handler => sub
+        {
+            my $message = shift;
 
-    my ($controller_name, $method) = split '\.', $message->target_uri;
+            # Call action using target_uri and value.
 
-    $controller_name->require;
-    my $controller = $controller_name->new;
+            my ($controller_name, $action) = split '\.', $message->target_uri;
 
-    return $controller->$method($message->value);
-  }
-);
-$remoting->run;
- 
-my $data = $remoting->data;
+            $controller_name->require;
+            my $controller = $controller_name->new;
+
+            return $controller->$action($message->value);
+        }
+    );
+    $remoting->run;
+
+    my $data = $remoting->data;
 
 =head1 DESCRIPTION
 

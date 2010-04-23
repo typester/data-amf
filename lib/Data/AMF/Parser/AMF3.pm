@@ -472,12 +472,12 @@ sub read_byte_array
 }
 
 =head1 NAME
- 
+
 Data::AMF::Parser::AMF3 - deserializer for AMF3
 
 =head1 SYNOPSIS
 
-my $obj = Data::AMF::Parser::AMF3->parse($amf3_data);
+    my $obj = Data::AMF::Parser::AMF3->parse($amf3_data);
 
 =head1 METHODS
 

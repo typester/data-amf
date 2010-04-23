@@ -386,7 +386,7 @@ Data::AMF::Formatter::AMF3 - AMF3 serializer
 
 =head1 SYNOPSIS
 
-my $amf3_data = Data::AMF::Formatter::AMF3->format($obj);
+    my $amf3_data = Data::AMF::Formatter::AMF3->format($obj);
 
 =head1 METHODS
 
