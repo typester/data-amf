@@ -190,7 +190,7 @@ sub read_string
 	else
 	{
 		my $length = $type >> 1;
-		my $str;
+		my $str = '';
 		
 		if ($length > 0)
 		{
@@ -278,12 +278,12 @@ sub read_array
 		my $key = $self->read_string();
 		my $array;
 		
-		if (defined $key)
+		if ($key ne '')
 		{
 			$array = {};
 			push @{ $self->{'stored_objects'} }, $array;
 			
-			while(length $key)
+			while($key ne '')
 			{
 				my $value = $self->read_one();
 				$array->{$key} = $value;
@@ -411,7 +411,7 @@ sub read_object
 		if ($class_definition->{'dynamic'})
 		{
 			my $key;
-			while (($key = $self->read_string()) && length $key != 0) {
+			while (($key = $self->read_string()) && $key ne '') {
 				$obj->{$key} = $self->read_one();
 			}
 		}
