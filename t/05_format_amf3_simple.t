@@ -51,10 +51,27 @@ Data::AMF::Type::Boolean->new(0)
 --- input
 {}
 
-=== object2
+=== complex object
 --- input
 {
-	array => [ "foo", "bar" ],
+	array => [
+		"foo",
+		"bar",
+		'',
+		{
+			id => 1,
+			name => 'hoge',
+		},
+		{
+			id => 2,
+			name => '',
+			age => 21,
+		},
+		{
+			id => 3,
+			name => 'hoge',
+		},
+	],
 	hash => { foo => "bar" }
 }
 

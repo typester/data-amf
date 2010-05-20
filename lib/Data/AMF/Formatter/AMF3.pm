@@ -220,9 +220,11 @@ sub write_string
 	}
 	else
 	{
-		$self->{'stored_strings'}->{$value} = $self->{'stored_strings_count'};
-		$self->{'stored_strings_count'}++;
-		
+		if ($value ne '') {
+			$self->{'stored_strings'}->{$value} = $self->{'stored_strings_count'};
+			$self->{'stored_strings_count'}++;
+		}
+
 		my $reference = length $value;
 		$reference = $reference << 1 | 1;
 		
