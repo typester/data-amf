@@ -1,7 +1,10 @@
 Revision history for Perl extension Data::AMF
 
+0.04 2010-05-20T15:08:31+09:00
+     - fixed AMF3 empty string handling (seagirl++)
+
 0.03 2009-12-24T21:39:01+09:00
-     - added AMR3 support (seagirl++)
+     - added AMF3 support (seagirl++)
      - added Data::AMF::Remoting (seagirl++)
 
 0.02004 2008-08-19T11:08:14+09:00
