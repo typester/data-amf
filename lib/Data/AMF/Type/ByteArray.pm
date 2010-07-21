@@ -21,6 +21,10 @@ sub data
 	return $self->{'data'};
 }
 
+1;
+
+__END__
+
 =head1 NAME
  
 Data::AMF::Type::ByteArray
@@ -40,5 +44,3 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;

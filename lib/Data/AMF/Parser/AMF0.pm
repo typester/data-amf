@@ -170,6 +170,10 @@ sub parse_avmplus_object {
 	$parser->read;
 }
 
+1;
+
+__END__
+
 =head1 NAME
 
 Data::AMF::Parser::AMF0 - deserializer for AMF0
@@ -231,6 +235,4 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
 

@@ -471,6 +471,10 @@ sub read_byte_array
 	}
 }
 
+1;
+
+__END__
+
 =head1 NAME
 
 Data::AMF::Parser::AMF3 - deserializer for AMF3
@@ -496,6 +500,4 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
 

@@ -1,5 +1,5 @@
 package Data::AMF::IO;
-use Moose;
+use Any::Moose;
 
 require bytes;
 
@@ -26,7 +26,7 @@ has refs => (
     lazy    => 1,
 );
 
-__PACKAGE__->meta->make_immutable;
+no Any::Moose;
 
 sub read {
     my ($self, $len) = @_;
@@ -170,6 +170,10 @@ sub write_utf8_long {
     $self->write($data);
 }
 
+__PACKAGE__->meta->make_immutable;
+
+__END__
+
 =head1 NAME
 
 Data::AMF::IO - IO class for reading/writing AMF data
@@ -235,6 +239,3 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
-

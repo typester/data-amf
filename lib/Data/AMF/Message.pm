@@ -1,5 +1,5 @@
 package Data::AMF::Message;
-use Moose;
+use Any::Moose;
 
 has target_uri => (
     is       => 'rw',
@@ -26,6 +26,8 @@ has version => (
     isa => 'Int',
 );
 
+no Any::Moose;
+
 sub result {
     my ($self, $obj) = @_;
 
@@ -51,6 +53,10 @@ sub error {
         version      => $self->version,
     );
 }
+
+__PACKAGE__->meta->make_immutable;
+
+__END__
 
 =head1 NAME
 
@@ -105,6 +111,3 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
-

@@ -1,5 +1,5 @@
 package Data::AMF::Packet;
-use Moose;
+use Any::Moose;
 
 require bytes;
 use Data::AMF::Parser;
@@ -30,7 +30,7 @@ has messages => (
 	default => sub { [] },
 );
 
-__PACKAGE__->meta->make_immutable;
+no Any::Moose;
 
 sub deserialize
 {
@@ -149,6 +149,10 @@ sub serialize
 	return $io->data;
 }
 
+__PACKAGE__->meta->make_immutable;
+
+__END__
+
 =head1 NAME
 
 Data::AMF::Packet - serialize / deserialize AMF message packet
@@ -207,6 +211,4 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
 

@@ -1,5 +1,5 @@
 package Data::AMF::Header;
-use Moose;
+use Any::Moose;
 
 has name => (
     is       => 'rw',
@@ -21,6 +21,12 @@ has version => (
     is  => 'rw',
     isa => 'Int',
 );
+
+no Any::Moose;
+
+__PACKAGE__->meta->make_immutable;
+
+__END__
 
 =head1 NAME
 
@@ -49,7 +55,3 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
-
-

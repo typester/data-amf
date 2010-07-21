@@ -1,6 +1,6 @@
 package Data::AMF;
 use 5.008001;
-use Moose;
+use Any::Moose;
 
 our $VERSION = '0.04';
 
@@ -31,7 +31,7 @@ has formatter => (
     },
 );
 
-__PACKAGE__->meta->make_immutable;
+no Any::Moose;
 
 sub serialize {
     my $self = shift;
@@ -42,6 +42,10 @@ sub deserialize {
     my $self = shift;
     $self->parser->parse(@_);
 }
+
+__PACKAGE__->meta->make_immutable;
+
+__END__
 
 =head1 NAME
 
@@ -113,5 +117,3 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 
 =cut
-
-1;
