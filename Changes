@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.05 2010-07-21T11:45:32+09:00
+     - use Any::Moose
+
 0.04 2010-05-20T15:08:31+09:00
      - fixed AMF3 empty string handling (seagirl++)
 
