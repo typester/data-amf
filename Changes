@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.06 2010-07-21T14:45:17+09:00
+     - minor changes for recent Moose
+
 0.05 2010-07-21T11:45:32+09:00
      - use Any::Moose
 

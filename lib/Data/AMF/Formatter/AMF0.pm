@@ -2,7 +2,7 @@ package Data::AMF::Formatter::AMF0;
 use Any::Moose;
 
 require bytes;
-use Scalar::Util qw/looks_like_number/;
+use Scalar::Util qw/looks_like_number blessed/;
 use Data::AMF::IO;
 
 has 'io' => (
@@ -32,7 +32,7 @@ sub format {
                 $self->format_object($obj);
             }
             else {
-                confess qq[cannot format "$ref" object];
+                Carp::confess qq[cannot format "$ref" object];
             }
         }
         else {
