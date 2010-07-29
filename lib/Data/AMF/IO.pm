@@ -44,7 +44,9 @@ sub read {
 sub read_u8 {
     my $self = shift;
 
-    my $data = $self->read(1) or return;
+    my $data = $self->read(1);
+    return unless defined $data;
+
     unpack('C', $data);
 }
 
@@ -52,6 +54,8 @@ sub read_u16 {
     my $self = shift;
 
     my $data = $self->read(2);
+    return unless defined $data;
+
     unpack('n', $data);
 }
 
@@ -59,6 +63,7 @@ sub read_s16 {
     my $self = shift;
 
     my $data = $self->read(2);
+    return unless defined $data;
 
     return unpack('s>', $data) if $] >= 5.009002;
     return unpack('s', $data)  if ENDIAN eq 'BIG';
@@ -93,6 +98,8 @@ sub read_utf8 {
     my $self = shift;
 
     my $len = $self->read_u16;
+    return unless defined $len;
+
     $self->read($len);
 }
 
@@ -100,6 +107,8 @@ sub read_utf8_long {
     my $self = shift;
 
     my $len = $self->read_u32;
+    return unless defined $len;
+
     $self->read($len);
 }
 

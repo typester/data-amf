@@ -1,5 +1,8 @@
 Revision history for Perl extension Data::AMF
 
+0.07 2010-07-29T17:35:59+09:00
+     - added missing undefined check on io read functions
+
 0.06 2010-07-21T14:45:17+09:00
      - minor changes for recent Moose
 
