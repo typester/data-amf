@@ -36,4 +36,7 @@ __DATA__
 data: {}
 --- expected: data/amf3/null_object
 
-
+=== number with double precision
+--- input
+data: 123.45
+--- expected: data/amf3/number

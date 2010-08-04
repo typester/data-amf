@@ -135,7 +135,7 @@ sub write
 	{
 		if (looks_like_number($value))
 		{
-			if ($value >= AMF3_INTEGER_MIN && $value <= AMF3_INTEGER_MAX)
+			if ($value >= AMF3_INTEGER_MIN && $value <= AMF3_INTEGER_MAX && $value == int($value))
 			{
 				$self->io->write_u8(INTEGER_MARKER);
 				$self->write_integer($value);

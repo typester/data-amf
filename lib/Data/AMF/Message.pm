@@ -1,5 +1,6 @@
 package Data::AMF::Message;
 use Any::Moose;
+use Scalar::Util qw/blessed/;
 
 has target_uri => (
     is       => 'rw',
