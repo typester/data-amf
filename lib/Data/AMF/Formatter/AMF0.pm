@@ -36,7 +36,7 @@ sub format {
             }
         }
         else {
-            if (looks_like_number($obj)) {
+            if (looks_like_number($obj) && $obj !~ /^0\d/) {
                 $self->format_number($obj);
             }
             elsif (defined($obj)) {
